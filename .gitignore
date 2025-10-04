@@ -1,0 +1,46 @@
+# Virtual Environment
+venv/
+env/
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Claude
+.claude/
+
+# Logs and outputs
+logs/
+output/
+*.log
+
+# Learning data (contains fetched content)
+learning/
+
+# Test reports
+test-report-*.json
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Temporary files
+*.tmp
+*.bak
+~*
+
+# API Keys and Secrets
+*.key
+secrets.json
+credentials.json
