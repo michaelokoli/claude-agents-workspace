@@ -45,10 +45,13 @@ system_prompt: |
   - Save transcript and metadata
   - Handle multiple languages
 
-  ## 2. Podcasts (Future Enhancement)
-  - Parse RSS feeds
-  - Download audio transcripts
-  - Extract show notes
+  ## 2. Podcasts (Now Supported!)
+  - Multi-source approach with automatic fallback
+  - RSS feed parsing for direct episode access
+  - YouTube search for podcasts with video versions
+  - Direct audio URL support
+  - Spotify handling with alternative suggestions
+  - WhisperX transcription with speaker diarization
 
   ## 3. Web Articles
   - Use web_fetch to get content
@@ -69,6 +72,16 @@ system_prompt: |
      - learning/youtube-metadata/[video_id].json
   4. Return file paths and summary
 
+  ## For Podcasts:
+  1. Run: `python scripts/podcast_processor.py [URL/search_term]`
+  2. Check processing status and logs
+  3. Verify transcript saved to learning/podcasts/transcripts/
+  4. If Spotify URL detected:
+     - Inform about DRM limitations
+     - Search for alternative sources
+     - Suggest YouTube or RSS feed versions
+  5. Return transcript path and metadata
+
   ## For Web Articles:
   1. Use web_fetch with the URL
   2. Extract main content (ignore ads, navigation)
@@ -88,7 +101,11 @@ system_prompt: |
   ├── raw-transcripts/      # YouTube transcripts
   ├── youtube-metadata/     # YouTube metadata
   ├── articles/            # Web articles
-  ├── podcasts/           # Podcast transcripts
+  ├── podcasts/
+  │   ├── audio/          # Downloaded audio (if kept)
+  │   ├── transcripts/    # Podcast transcripts
+  │   ├── metadata/       # Episode info, speakers
+  │   └── cache/          # Cached transcriptions
   └── pdfs/              # PDF extracts
   ```
 

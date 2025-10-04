@@ -1,0 +1,128 @@
+# Whisper Transcription Configuration
+# For use with podcast_processor.py
+
+transcription:
+  # Mode: "api" for OpenAI API, "local" for local WhisperX
+  mode: "api"
+
+  # Whisper model size (for local mode)
+  # Options: tiny, base, small, medium, large, large-v2, large-v3
+  model: "base"
+
+  # Language code (e.g., "en" for English, "auto" for auto-detect)
+  language: "en"
+
+  # Enable speaker diarization (identify different speakers)
+  diarize: true
+
+  # Maximum number of expected speakers
+  max_speakers: 4
+
+  # Apply noise filtering before transcription
+  noise_filter: true
+
+  # Confidence threshold for transcription (0.0 to 1.0)
+  confidence_threshold: 0.5
+
+  # Include word-level timestamps
+  word_timestamps: true
+
+  # API settings (for mode: "api")
+  api:
+    # Temperature for sampling (0.0 to 1.0)
+    temperature: 0.0
+
+    # Response format
+    response_format: "verbose_json"
+
+    # Prompt to guide transcription style
+    prompt: "This is a podcast transcript. Include filler words and maintain natural speech patterns."
+
+# Audio preprocessing settings
+preprocessing:
+  # Normalize audio volume
+  normalize: true
+
+  # Target loudness in LUFS
+  target_loudness: -16.0
+
+  # Remove silence longer than this (seconds)
+  silence_threshold: 2.0
+
+  # Audio format for processing
+  format: "mp3"
+
+  # Sample rate (Hz)
+  sample_rate: 16000
+
+  # Mono or stereo
+  channels: "mono"
+
+# Storage settings
+storage:
+  # Base directory for all podcast data
+  base_path: "learning/podcasts"
+
+  # Keep downloaded audio files after transcription
+  keep_audio: false
+
+  # Cache transcripts to avoid re-processing
+  cache_transcripts: true
+
+  # Maximum cache size in MB
+  max_cache_size: 500
+
+  # Days to keep cached items
+  cache_ttl_days: 30
+
+# Source preferences
+sources:
+  # Try to find RSS feeds
+  try_rss: true
+
+  # Search YouTube as fallback
+  try_youtube: true
+
+  # Accept direct audio URLs
+  try_direct: true
+
+  # Preferred quality for downloads
+  preferred_quality: "best"
+
+  # Maximum file size to process (MB)
+  max_file_size: 500
+
+# Performance settings
+performance:
+  # Number of CPU threads for local processing
+  cpu_threads: 4
+
+  # Use GPU if available (local mode)
+  use_gpu: true
+
+  # Batch size for processing
+  batch_size: 8
+
+  # Timeout for downloads (seconds)
+  download_timeout: 300
+
+  # Timeout for transcription (seconds)
+  transcription_timeout: 1800
+
+# Logging
+logging:
+  # Log level: DEBUG, INFO, WARNING, ERROR
+  level: "INFO"
+
+  # Log file path (null for console only)
+  file: "learning/podcasts/podcast_processor.log"
+
+  # Maximum log file size (MB)
+  max_size: 10
+
+  # Number of backup log files
+  backup_count: 3
+
+# API Keys (set via environment variables for security)
+# OPENAI_API_KEY - for Whisper API
+# HUGGINGFACE_TOKEN - for speaker diarization models

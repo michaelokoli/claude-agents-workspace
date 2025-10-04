@@ -1,0 +1,34 @@
+# Claude Agents Workspace Requirements
+
+# Core YouTube Transcript Support
+youtube-transcript-api>=1.2.2
+
+# Podcast Processing
+feedparser>=6.0.10        # RSS feed parsing
+yt-dlp>=2024.1.0          # Audio/video downloading
+pydub>=0.25.1            # Audio processing
+requests>=2.31.0         # HTTP requests
+
+# Transcription (choose one)
+# For API mode (simpler):
+openai>=1.0.0            # OpenAI Whisper API
+
+# For local mode (install separately due to size):
+# whisperx                # Enhanced Whisper (install via git)
+# pyannote.audio          # Speaker diarization
+# torch                   # PyTorch for ML models
+# torchaudio             # Audio processing for PyTorch
+
+# Audio Processing
+ffmpeg-python>=0.2.0     # FFmpeg bindings
+noisereduce>=3.0.0      # Noise reduction
+
+# Utilities
+PyYAML>=6.0              # YAML configuration
+python-dotenv>=1.0.0     # Environment variables
+tqdm>=4.65.0            # Progress bars
+colorama>=0.4.6         # Colored terminal output
+
+# Testing
+pytest>=7.4.0           # Test framework
+pytest-asyncio>=0.21.0  # Async test support
