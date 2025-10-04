@@ -15,6 +15,11 @@ from pathlib import Path
 from typing import Optional, Dict, List, Tuple
 from urllib.parse import urlparse, quote
 
+# Import the existing YouTube transcript fetcher
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from get_transcript import extract_video_id, get_video_info, save_transcript
+from youtube_transcript_api import YouTubeTranscriptApi
+
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
@@ -126,6 +131,16 @@ class PodcastProcessor:
             return all([result.scheme, result.netloc])
         except:
             return False
+
+    def _is_youtube_url(self, text: str) -> bool:
+        """Check if the text is a YouTube URL"""
+        youtube_patterns = [
+            'youtube.com/watch',
+            'youtu.be/',
+            'youtube.com/embed/',
+            'youtube.com/v/'
+        ]
+        return any(pattern in text.lower() for pattern in youtube_patterns)
 
     def _extract_title_from_url(self, url: str) -> str:
         """Extract a reasonable title from a URL"""
@@ -396,12 +411,77 @@ class PodcastProcessor:
 
         return str(transcript_path)
 
+    def process_youtube_transcript(self, url: str) -> Optional[str]:
+        """
+        Process YouTube videos using the existing transcript fetcher
+        No download required - uses YouTube Transcript API directly
+        """
+        logger.info(f"Processing YouTube URL with transcript fetcher: {url}")
+
+        try:
+            # Extract video ID
+            video_id = extract_video_id(url)
+            logger.info(f"Extracted video ID: {video_id}")
+
+            # Fetch transcript using YouTube Transcript API
+            api = YouTubeTranscriptApi()
+            transcript_obj = api.fetch(video_id)
+            transcript_data = transcript_obj.snippets
+
+            # Get video metadata
+            metadata = get_video_info(video_id)
+
+            # Save transcript and metadata
+            save_transcript(video_id, transcript_data, metadata)
+
+            # Also save in podcast processor format
+            base_path = Path(self.config['storage']['base_path'])
+            transcript_path = base_path / 'transcripts' / f"{video_id}_youtube.json"
+
+            # Convert to processor format
+            segments = []
+            for snippet in transcript_data:
+                segments.append({
+                    'start': snippet.start,
+                    'end': snippet.start + snippet.duration,
+                    'text': snippet.text,
+                    'speaker': 'Unknown'  # YouTube doesn't provide speaker info
+                })
+
+            processor_transcript = {
+                'source': url,
+                'title': f"YouTube Video: {video_id}",
+                'date': datetime.now().isoformat(),
+                'segments': segments,
+                'metadata': metadata
+            }
+
+            with open(transcript_path, 'w', encoding='utf-8') as f:
+                json.dump(processor_transcript, f, indent=2, ensure_ascii=False)
+
+            logger.info(f"YouTube transcript saved to: {transcript_path}")
+            return str(transcript_path)
+
+        except Exception as e:
+            logger.error(f"Failed to fetch YouTube transcript: {e}")
+            logger.info("Falling back to download and transcribe method...")
+            return None
+
     def process_podcast(self, identifier: str) -> Optional[str]:
         """
         Main processing pipeline
         Returns path to transcript file or None if failed
         """
         logger.info(f"Starting podcast processing: {identifier}")
+
+        # Check if it's a YouTube URL and use the transcript fetcher
+        if self._is_youtube_url(identifier):
+            logger.info("Detected YouTube URL - using transcript fetcher")
+            transcript_path = self.process_youtube_transcript(identifier)
+            if transcript_path:
+                return transcript_path
+            # If transcript fetcher fails, continue with normal flow
+            logger.warning("YouTube transcript fetch failed, trying download method")
 
         # Find source
         source = self.find_podcast_source(identifier)

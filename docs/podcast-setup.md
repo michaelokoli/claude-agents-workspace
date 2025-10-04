@@ -125,6 +125,28 @@ The system attempts sources in this order:
 3. **YouTube** - Searches YouTube for the podcast
 4. **Spotify** - Detects and provides alternatives (cannot download)
 
+### YouTube Integration (Updated!)
+
+**NEW:** YouTube URLs now use the **YouTube Transcript API** directly:
+
+1. **Automatic Detection**: YouTube URLs are detected and routed to transcript fetcher
+2. **No Download Required**: Uses existing YouTube captions (no ffmpeg needed!)
+3. **Instant Results**: Fetches in seconds vs minutes for download+transcribe
+4. **Fallback Support**: If no transcript exists, falls back to download method
+
+**Benefits:**
+- ✅ No ffmpeg dependency for YouTube content
+- ✅ 10-100x faster processing (seconds vs minutes)
+- ✅ Uses human-corrected captions when available
+- ✅ Saves bandwidth and storage
+
+**How it works:**
+```python
+# Automatically detects and uses transcript API
+python scripts/podcast_processor.py "https://youtube.com/watch?v=XuvKFsktX0Q"
+# Fetches transcript in ~2 seconds instead of downloading/transcribing
+```
+
 ### Handling Spotify Podcasts
 
 Since Spotify content is DRM-protected, the system:
@@ -246,6 +268,9 @@ export OPENAI_API_KEY="your-key-here"
 
 ## Future Enhancements
 
+**Note**: All future enhancements are now tracked centrally in [ROADMAP.md](../ROADMAP.md)
+
+Planned podcast-specific improvements include:
 - [ ] Real-time transcription streaming
 - [ ] Multi-language support
 - [ ] Automatic RSS feed discovery
@@ -254,7 +279,8 @@ export OPENAI_API_KEY="your-key-here"
 - [ ] Chapter detection
 - [ ] Sentiment analysis
 - [ ] Topic modeling
-- [ ] Knowledge graph generation
+
+See [ROADMAP.md](../ROADMAP.md) for detailed timelines and implementation plans.
 
 ## Examples
 
